@@ -66,7 +66,7 @@ export default function SignInPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@lulu.com"
+                placeholder="admin@luluhypermarket.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required

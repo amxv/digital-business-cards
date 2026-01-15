@@ -26,7 +26,7 @@ async function seed() {
     // Insert admin user
     await db.insert(schema.users).values({
       id: adminId,
-      email: 'admin@lulu.com',
+      email: 'admin@luluhypermarket.com',
       name: 'Admin',
       role: 'admin',
       emailVerified: true,
@@ -42,7 +42,7 @@ async function seed() {
     });
 
     console.log('Created admin user:');
-    console.log('  Email: admin@lulu.com');
+    console.log('  Email: admin@luluhypermarket.com');
     console.log('  Password: admin123');
 
     // Create sample contact
