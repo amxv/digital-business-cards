@@ -2,15 +2,14 @@
 
 import { useEffect, useRef, useState } from 'react';
 import QRCode from 'qrcode';
-import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
 
-interface QRCodeDisplayProps {
+interface BrandedQRCodeProps {
   url: string;
-  name: string;
+  size?: number;
+  className?: string;
 }
 
-export function QRCodeDisplay({ url, name }: QRCodeDisplayProps) {
+export function BrandedQRCode({ url, size = 200, className }: BrandedQRCodeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [dataUrl, setDataUrl] = useState<string>('');
 
@@ -22,25 +21,25 @@ export function QRCodeDisplay({ url, name }: QRCodeDisplayProps) {
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      const size = 300;
+      // Set canvas size
       canvas.width = size;
       canvas.height = size;
 
       // Generate QR code data
       const qrData = QRCode.create(url, {
-        errorCorrectionLevel: 'H',
+        errorCorrectionLevel: 'H', // High error correction for logo overlay
       });
 
       const modules = qrData.modules;
       const moduleCount = modules.size;
       const moduleSize = size / moduleCount;
 
-      // Background color (cream/beige)
+      // Background color (cream/beige to match card)
       ctx.fillStyle = '#f5f0e6';
       ctx.fillRect(0, 0, size, size);
 
       // Draw QR code modules
-      const finderSize = 7;
+      const finderSize = 7; // Finder pattern is 7x7 modules
       const green = '#00A550';
       const black = '#000000';
 
@@ -51,33 +50,51 @@ export function QRCodeDisplay({ url, name }: QRCodeDisplayProps) {
           const x = col * moduleSize;
           const y = row * moduleSize;
 
+          // Check if this module is part of a finder pattern (corners)
           const isTopLeftFinder = row < finderSize && col < finderSize;
           const isTopRightFinder = row < finderSize && col >= moduleCount - finderSize;
           const isBottomLeftFinder = row >= moduleCount - finderSize && col < finderSize;
           const isFinder = isTopLeftFinder || isTopRightFinder || isBottomLeftFinder;
 
+          // Use green for finder patterns, black for data
           ctx.fillStyle = isFinder ? green : black;
 
+          // Draw rounded dots for a modern look
           const dotSize = moduleSize * 0.85;
+
           ctx.beginPath();
-          ctx.arc(x + moduleSize / 2, y + moduleSize / 2, dotSize / 2, 0, Math.PI * 2);
+          ctx.arc(
+            x + moduleSize / 2,
+            y + moduleSize / 2,
+            dotSize / 2,
+            0,
+            Math.PI * 2
+          );
           ctx.fill();
         }
       }
 
-      // Draw finder pattern inner squares
+      // Draw the inner squares of finder patterns (white then green)
       const drawFinderInner = (startX: number, startY: number) => {
+        // White ring (modules 1-5)
         ctx.fillStyle = '#f5f0e6';
-        ctx.fillRect(startX + moduleSize, startY + moduleSize, moduleSize * 5, moduleSize * 5);
+        const whiteStart = moduleSize;
+        const whiteSize = moduleSize * 5;
+        ctx.fillRect(startX + whiteStart, startY + whiteStart, whiteSize, whiteSize);
+
+        // Green center square (modules 2-4)
         ctx.fillStyle = green;
-        ctx.fillRect(startX + moduleSize * 2, startY + moduleSize * 2, moduleSize * 3, moduleSize * 3);
+        const greenStart = moduleSize * 2;
+        const greenSize = moduleSize * 3;
+        ctx.fillRect(startX + greenStart, startY + greenStart, greenSize, greenSize);
       };
 
-      drawFinderInner(0, 0);
-      drawFinderInner((moduleCount - finderSize) * moduleSize, 0);
-      drawFinderInner(0, (moduleCount - finderSize) * moduleSize);
+      // Apply to all three finder patterns
+      drawFinderInner(0, 0); // Top-left
+      drawFinderInner((moduleCount - finderSize) * moduleSize, 0); // Top-right
+      drawFinderInner(0, (moduleCount - finderSize) * moduleSize); // Bottom-left
 
-      // Load and draw logo
+      // Load and draw logo in center
       const logo = new Image();
       logo.crossOrigin = 'anonymous';
       logo.src = '/lulu-logo.png';
@@ -87,52 +104,36 @@ export function QRCodeDisplay({ url, name }: QRCodeDisplayProps) {
         const logoX = (size - logoSize) / 2;
         const logoY = (size - logoSize) / 2;
 
+        // White background circle for logo
         ctx.fillStyle = '#f5f0e6';
         ctx.beginPath();
         ctx.arc(size / 2, size / 2, logoSize * 0.65, 0, Math.PI * 2);
         ctx.fill();
 
+        // Draw logo
         ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+
+        // Convert to data URL
         setDataUrl(canvas.toDataURL('image/png'));
       };
 
       logo.onerror = () => {
+        // If logo fails to load, still set the QR code
         setDataUrl(canvas.toDataURL('image/png'));
       };
     };
 
     generateQR();
-  }, [url]);
-
-  const handleDownload = () => {
-    if (!dataUrl) return;
-    const link = document.createElement('a');
-    link.download = `${name.toLowerCase().replace(/\s+/g, '-')}-qr.png`;
-    link.href = dataUrl;
-    link.click();
-  };
+  }, [url, size]);
 
   return (
-    <div className="flex flex-col items-center">
+    <>
       <canvas ref={canvasRef} style={{ display: 'none' }} />
       {dataUrl ? (
-        <img
-          src={dataUrl}
-          alt={`QR Code for ${name}`}
-          className="w-[300px] h-[300px] rounded-lg shadow-md"
-        />
+        <img src={dataUrl} alt="QR Code" className={className} style={{ width: size, height: size }} />
       ) : (
-        <div className="w-[300px] h-[300px] bg-gray-100 animate-pulse rounded-lg" />
+        <div className={className} style={{ width: size, height: size, background: '#f5f0e6' }} />
       )}
-      <Button
-        variant="outline"
-        className="mt-4"
-        onClick={handleDownload}
-        disabled={!dataUrl}
-      >
-        <Download className="w-4 h-4 mr-2" />
-        Download QR Code
-      </Button>
-    </div>
+    </>
   );
 }
