@@ -82,7 +82,7 @@ export function CardPreview({
                 {location ? location.split(',').slice(-2).join(',').trim() : 'Location'}
               </p>
 
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2 text-sm pb-5">
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-[#C4A35A]" />
                   <span className="text-gray-700 text-xs">{location || 'Office Location'}</span>
