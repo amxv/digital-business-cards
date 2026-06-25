@@ -7,13 +7,15 @@ import * as schema from '../db/schema';
 async function seed() {
   const sql = neon(process.env.DATABASE_URL!);
   const db = drizzle(sql, { schema });
+  const adminEmail = process.env.SEED_ADMIN_EMAIL || 'admin@example.com';
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD || 'change-me-before-production';
 
   console.log('Seeding database...');
 
   // Create admin user
   const adminId = nanoid(21);
   const accountId = nanoid(36);
-  const hashedPassword = await hashPassword('admin123');
+  const hashedPassword = await hashPassword(adminPassword);
 
   try {
     // Check if admin exists
@@ -26,7 +28,7 @@ async function seed() {
     // Insert admin user
     await db.insert(schema.users).values({
       id: adminId,
-      email: 'admin@example.com',
+      email: adminEmail,
       name: 'Admin',
       role: 'admin',
       emailVerified: true,
@@ -42,8 +44,8 @@ async function seed() {
     });
 
     console.log('Created admin user:');
-    console.log('  Email: admin@example.com');
-    console.log('  Password: admin123');
+    console.log(`  Email: ${adminEmail}`);
+    console.log(`  Password: ${adminPassword}`);
 
     // Create sample contact
     await db.insert(schema.contacts).values({
