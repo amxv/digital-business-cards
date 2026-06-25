@@ -8,12 +8,12 @@ export const appConfig = {
     'Create, manage, and share digital business cards.',
   defaultWebsite:
     process.env.NEXT_PUBLIC_DEFAULT_WEBSITE || 'yourcompany.com',
-  logoPath: process.env.NEXT_PUBLIC_LOGO_PATH || '/brand-logo.svg',
+  logoPath: process.env.NEXT_PUBLIC_LOGO_PATH || '',
   logoAlt: process.env.NEXT_PUBLIC_LOGO_ALT || 'Digital Business Cards',
   logoWidth: Number(process.env.NEXT_PUBLIC_LOGO_WIDTH || 160),
   logoHeight: Number(process.env.NEXT_PUBLIC_LOGO_HEIGHT || 48),
 };
 
 export function hasBrandLogo() {
-  return Boolean(appConfig.logoPath);
+  return Boolean(appConfig.logoPath.trim());
 }

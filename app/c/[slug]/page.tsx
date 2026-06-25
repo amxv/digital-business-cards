@@ -5,8 +5,8 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { MapPin, Phone, Mail, Globe, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import Image from 'next/image';
-import { appConfig, hasBrandLogo } from '@/lib/app-config';
+import { appConfig } from '@/lib/app-config';
+import { BrandMark } from '@/components/brand-mark';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -49,19 +49,11 @@ export default async function ContactPage({ params }: PageProps) {
       {/* Header with Logo */}
       <header className="pt-8 pb-4 px-6">
         <div className="flex justify-center">
-          {hasBrandLogo() ? (
-            <Image
-              src={appConfig.logoPath}
-              alt={appConfig.logoAlt}
-              width={appConfig.logoWidth}
-              height={appConfig.logoHeight}
-              className="h-12 w-auto"
-            />
-          ) : (
-            <span className="text-3xl font-semibold text-slate-900">
-              {appConfig.appName}
-            </span>
-          )}
+          <BrandMark
+            className="rounded-2xl bg-white/80 px-4 py-3 shadow-sm ring-1 ring-slate-200"
+            iconClassName="h-10 w-10 rounded-xl"
+            labelClassName="text-2xl"
+          />
         </div>
       </header>
 

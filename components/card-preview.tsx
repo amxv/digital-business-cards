@@ -1,9 +1,9 @@
 'use client';
 
 import { MapPin, Phone, Mail, Globe } from 'lucide-react';
-import Image from 'next/image';
 import { BrandedQRCode } from './branded-qr-code';
-import { appConfig, hasBrandLogo } from '@/lib/app-config';
+import { appConfig } from '@/lib/app-config';
+import { BrandMark } from '@/components/brand-mark';
 
 interface CardPreviewProps {
   nameEn: string;
@@ -55,19 +55,10 @@ export function CardPreview({
           </div>
 
           <div className="absolute top-3 right-4">
-            {hasBrandLogo() ? (
-              <Image
-                src={appConfig.logoPath}
-                alt={appConfig.logoAlt}
-                width={100}
-                height={36}
-                className="h-8 w-auto"
-              />
-            ) : (
-              <span className="text-sm font-semibold text-slate-800">
-                {appConfig.appName}
-              </span>
-            )}
+            <BrandMark
+              showLabel={false}
+              iconClassName="h-8 w-8 rounded-lg"
+            />
           </div>
 
           <div className="absolute inset-0 flex">

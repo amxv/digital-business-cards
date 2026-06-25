@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import Image from 'next/image';
-import { appConfig, hasBrandLogo } from '@/lib/app-config';
+import { appConfig } from '@/lib/app-config';
+import { BrandMark } from '@/components/brand-mark';
 
 export default function SignInPage() {
   const [email, setEmail] = useState('');
@@ -42,19 +42,11 @@ export default function SignInPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            {hasBrandLogo() ? (
-              <Image
-                src={appConfig.logoPath}
-                alt={appConfig.logoAlt}
-                width={appConfig.logoWidth}
-                height={appConfig.logoHeight}
-                className="h-10 w-auto"
-              />
-            ) : (
-              <span className="text-2xl font-semibold text-slate-900">
-                {appConfig.appName}
-              </span>
-            )}
+            <BrandMark
+              className="rounded-2xl bg-white/80 px-3 py-2 shadow-sm ring-1 ring-slate-200"
+              iconClassName="h-10 w-10 rounded-xl"
+              labelClassName="text-2xl"
+            />
           </div>
           <CardTitle>{appConfig.adminTitle} Sign In</CardTitle>
           <CardDescription>
