@@ -30,7 +30,7 @@ export default async function AdminPage() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Business Cards</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Digital Business Cards</h1>
             <p className="text-gray-600">{allContacts.length} contacts</p>
           </div>
           <Link href="/admin/contacts/new">

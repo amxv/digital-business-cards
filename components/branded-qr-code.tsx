@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import QRCode from 'qrcode';
+import { appConfig, hasBrandLogo } from '@/lib/app-config';
 
 interface BrandedQRCodeProps {
   url: string;
@@ -94,10 +96,19 @@ export function BrandedQRCode({ url, size = 200, className }: BrandedQRCodeProps
       drawFinderInner((moduleCount - finderSize) * moduleSize, 0); // Top-right
       drawFinderInner(0, (moduleCount - finderSize) * moduleSize); // Bottom-left
 
+      const finalize = () => {
+        setDataUrl(canvas.toDataURL('image/png'));
+      };
+
+      if (!hasBrandLogo()) {
+        finalize();
+        return;
+      }
+
       // Load and draw logo in center
-      const logo = new Image();
+      const logo = new window.Image();
       logo.crossOrigin = 'anonymous';
-      logo.src = '/lulu-logo.png';
+      logo.src = appConfig.logoPath;
 
       logo.onload = () => {
         const logoSize = size * 0.22;
@@ -113,14 +124,10 @@ export function BrandedQRCode({ url, size = 200, className }: BrandedQRCodeProps
         // Draw logo
         ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
 
-        // Convert to data URL
-        setDataUrl(canvas.toDataURL('image/png'));
+        finalize();
       };
 
-      logo.onerror = () => {
-        // If logo fails to load, still set the QR code
-        setDataUrl(canvas.toDataURL('image/png'));
-      };
+      logo.onerror = finalize;
     };
 
     generateQR();
@@ -130,7 +137,15 @@ export function BrandedQRCode({ url, size = 200, className }: BrandedQRCodeProps
     <>
       <canvas ref={canvasRef} style={{ display: 'none' }} />
       {dataUrl ? (
-        <img src={dataUrl} alt="QR Code" className={className} style={{ width: size, height: size }} />
+        <Image
+          src={dataUrl}
+          alt="QR Code"
+          width={size}
+          height={size}
+          unoptimized
+          className={className}
+          style={{ width: size, height: size }}
+        />
       ) : (
         <div className={className} style={{ width: size, height: size, background: '#f5f0e6' }} />
       )}

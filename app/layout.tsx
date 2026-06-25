@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { appConfig } from "@/lib/app-config";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,10 +15,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Lulu Business Cards",
-    template: "%s | Lulu Business Cards",
+    default: appConfig.appName,
+    template: `%s | ${appConfig.appName}`,
   },
-  description: "Digital business cards for Lulu Group International",
+  description: appConfig.description,
 };
 
 export default function RootLayout({

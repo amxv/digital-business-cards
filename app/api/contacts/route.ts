@@ -4,6 +4,7 @@ import { contacts } from '@/db/schema';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { desc } from 'drizzle-orm';
+import { appConfig } from '@/lib/app-config';
 
 // GET /api/contacts - List all contacts
 export async function GET() {
@@ -51,13 +52,11 @@ export async function POST(request: Request) {
       .values({
         slug,
         nameEn: body.nameEn,
-        nameAr: body.nameAr || null,
         positionEn: body.positionEn,
-        positionAr: body.positionAr || null,
         location: body.location,
         phone: body.phone,
         email: body.email,
-        website: body.website || 'luluhypermarket.com',
+        website: body.website || appConfig.defaultWebsite,
       })
       .returning();
 

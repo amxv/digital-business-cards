@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import QRCode from 'qrcode';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
+import { appConfig, hasBrandLogo } from '@/lib/app-config';
 
 interface QRCodeDisplayProps {
   url: string;
@@ -77,10 +79,19 @@ export function QRCodeDisplay({ url, name }: QRCodeDisplayProps) {
       drawFinderInner((moduleCount - finderSize) * moduleSize, 0);
       drawFinderInner(0, (moduleCount - finderSize) * moduleSize);
 
+      const finalize = () => {
+        setDataUrl(canvas.toDataURL('image/png'));
+      };
+
+      if (!hasBrandLogo()) {
+        finalize();
+        return;
+      }
+
       // Load and draw logo
-      const logo = new Image();
+      const logo = new window.Image();
       logo.crossOrigin = 'anonymous';
-      logo.src = '/lulu-logo.png';
+      logo.src = appConfig.logoPath;
 
       logo.onload = () => {
         const logoSize = size * 0.22;
@@ -93,12 +104,10 @@ export function QRCodeDisplay({ url, name }: QRCodeDisplayProps) {
         ctx.fill();
 
         ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
-        setDataUrl(canvas.toDataURL('image/png'));
+        finalize();
       };
 
-      logo.onerror = () => {
-        setDataUrl(canvas.toDataURL('image/png'));
-      };
+      logo.onerror = finalize;
     };
 
     generateQR();
@@ -116,9 +125,12 @@ export function QRCodeDisplay({ url, name }: QRCodeDisplayProps) {
     <div className="flex flex-col items-center">
       <canvas ref={canvasRef} style={{ display: 'none' }} />
       {dataUrl ? (
-        <img
+        <Image
           src={dataUrl}
           alt={`QR Code for ${name}`}
+          width={300}
+          height={300}
+          unoptimized
           className="w-[300px] h-[300px] rounded-lg shadow-md"
         />
       ) : (

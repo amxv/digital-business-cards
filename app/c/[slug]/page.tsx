@@ -6,6 +6,7 @@ import { Metadata } from 'next';
 import { MapPin, Phone, Mail, Globe, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import { appConfig, hasBrandLogo } from '@/lib/app-config';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -26,8 +27,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: `${contact.nameEn} - Lulu Group International`,
-    description: `${contact.positionEn} at Lulu Group International`,
+    title: `${contact.nameEn} - ${appConfig.appName}`,
+    description: `${contact.positionEn} at ${appConfig.organizationName}`,
   };
 }
 
@@ -48,13 +49,19 @@ export default async function ContactPage({ params }: PageProps) {
       {/* Header with Logo */}
       <header className="pt-8 pb-4 px-6">
         <div className="flex justify-center">
-          <Image
-            src="/lulu-logo.png"
-            alt="Lulu Group International"
-            width={160}
-            height={60}
-            className="h-12 w-auto"
-          />
+          {hasBrandLogo() ? (
+            <Image
+              src={appConfig.logoPath}
+              alt={appConfig.logoAlt}
+              width={appConfig.logoWidth}
+              height={appConfig.logoHeight}
+              className="h-12 w-auto"
+            />
+          ) : (
+            <span className="text-3xl font-semibold text-slate-900">
+              {appConfig.appName}
+            </span>
+          )}
         </div>
       </header>
 
@@ -66,19 +73,9 @@ export default async function ContactPage({ params }: PageProps) {
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
               {contact.nameEn}
             </h1>
-            {contact.nameAr && (
-              <p className="text-xl text-gray-600 mb-2" dir="rtl">
-                {contact.nameAr}
-              </p>
-            )}
             <p className="text-lg text-[#00A550] font-medium">
               {contact.positionEn}
             </p>
-            {contact.positionAr && (
-              <p className="text-base text-gray-500" dir="rtl">
-                {contact.positionAr}
-              </p>
-            )}
           </div>
 
           {/* Contact Details */}
@@ -134,12 +131,12 @@ export default async function ContactPage({ params }: PageProps) {
               <div>
                 <p className="text-sm text-gray-500">Website</p>
                 <a
-                  href={`https://${contact.website}`}
+                  href={`https://${contact.website || appConfig.defaultWebsite}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-900 hover:text-[#00A550]"
                 >
-                  {contact.website}
+                  {contact.website || appConfig.defaultWebsite}
                 </a>
               </div>
             </div>
@@ -160,7 +157,7 @@ export default async function ContactPage({ params }: PageProps) {
       {/* Footer */}
       <footer className="border-t border-gray-200 py-6 px-6">
         <div className="text-center text-sm text-gray-500">
-          <p>Lulu Group International</p>
+          <p>{appConfig.organizationName}</p>
         </div>
       </footer>
     </div>

@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
+import { appConfig, hasBrandLogo } from '@/lib/app-config';
 
 export default function SignInPage() {
   const [email, setEmail] = useState('');
@@ -41,17 +42,23 @@ export default function SignInPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <Image
-              src="/lulu-logo.png"
-              alt="Lulu Group International"
-              width={160}
-              height={60}
-              className="h-10 w-auto"
-            />
+            {hasBrandLogo() ? (
+              <Image
+                src={appConfig.logoPath}
+                alt={appConfig.logoAlt}
+                width={appConfig.logoWidth}
+                height={appConfig.logoHeight}
+                className="h-10 w-auto"
+              />
+            ) : (
+              <span className="text-2xl font-semibold text-slate-900">
+                {appConfig.appName}
+              </span>
+            )}
           </div>
-          <CardTitle>Admin Sign In</CardTitle>
+          <CardTitle>{appConfig.adminTitle} Sign In</CardTitle>
           <CardDescription>
-            Sign in to manage business cards
+            Sign in to manage digital business cards
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -66,7 +73,7 @@ export default function SignInPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@luluhypermarket.com"
+                placeholder="admin@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required

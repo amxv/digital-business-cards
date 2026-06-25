@@ -1,4 +1,5 @@
 import type { Contact } from '@/db/schema';
+import { appConfig } from '@/lib/app-config';
 
 export function generateVCard(contact: Contact): string {
   // Split name into first and last name for N field
@@ -14,11 +15,11 @@ export function generateVCard(contact: Contact): string {
     'VERSION:3.0',
     `FN:${contact.nameEn}`,
     `N:${lastName};${firstName};;;`,
-    'ORG:Lulu Group International',
+    `ORG:${appConfig.organizationName}`,
     `TITLE:${contact.positionEn}`,
     `TEL;TYPE=CELL:${cleanPhone}`,
     `EMAIL:${contact.email}`,
-    `URL:https://${contact.website || 'luluhypermarket.com'}`,
+    `URL:https://${contact.website || appConfig.defaultWebsite}`,
     `ADR;TYPE=WORK:;;${contact.location};;;;`,
     'END:VCARD',
   ].join('\r\n');

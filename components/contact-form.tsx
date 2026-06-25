@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CardPreview } from '@/components/card-preview';
 import { Eye } from 'lucide-react';
 import type { Contact } from '@/db/schema';
+import { appConfig } from '@/lib/app-config';
 
 interface ContactFormProps {
   contact?: Contact;
@@ -22,13 +23,11 @@ export function ContactForm({ contact }: ContactFormProps) {
 
   const [formData, setFormData] = useState({
     nameEn: contact?.nameEn || '',
-    nameAr: contact?.nameAr || '',
     positionEn: contact?.positionEn || '',
-    positionAr: contact?.positionAr || '',
     location: contact?.location || '',
     phone: contact?.phone || '',
     email: contact?.email || '',
-    website: contact?.website || 'luluhypermarket.com',
+    website: contact?.website || appConfig.defaultWebsite,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,55 +85,29 @@ export function ContactForm({ contact }: ContactFormProps) {
               )}
 
               {/* Name Section */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="nameEn">Name (English) *</Label>
-                  <Input
-                    id="nameEn"
-                    name="nameEn"
-                    value={formData.nameEn}
-                    onChange={handleChange}
-                    placeholder="Bipin Raj"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="nameAr">Name (Arabic)</Label>
-                  <Input
-                    id="nameAr"
-                    name="nameAr"
-                    value={formData.nameAr}
-                    onChange={handleChange}
-                    placeholder="بيبين راج"
-                    dir="rtl"
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="nameEn">Name *</Label>
+                <Input
+                  id="nameEn"
+                  name="nameEn"
+                  value={formData.nameEn}
+                  onChange={handleChange}
+                  placeholder="Alex Morgan"
+                  required
+                />
               </div>
 
               {/* Position Section */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="positionEn">Position (English) *</Label>
-                  <Input
-                    id="positionEn"
-                    name="positionEn"
-                    value={formData.positionEn}
-                    onChange={handleChange}
-                    placeholder="Regional Director"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="positionAr">Position (Arabic)</Label>
-                  <Input
-                    id="positionAr"
-                    name="positionAr"
-                    value={formData.positionAr}
-                    onChange={handleChange}
-                    placeholder="المدير العام"
-                    dir="rtl"
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="positionEn">Position *</Label>
+                <Input
+                  id="positionEn"
+                  name="positionEn"
+                  value={formData.positionEn}
+                  onChange={handleChange}
+                  placeholder="Sales Director"
+                  required
+                />
               </div>
 
               {/* Location */}
@@ -145,7 +118,7 @@ export function ContactForm({ contact }: ContactFormProps) {
                   name="location"
                   value={formData.location}
                   onChange={handleChange}
-                  placeholder="Lulu Group Regional Office, Riyadh, Kingdom of Saudi Arabia"
+                  placeholder="Regional Office, Dubai, UAE"
                   required
                 />
               </div>
@@ -159,7 +132,7 @@ export function ContactForm({ contact }: ContactFormProps) {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="+966 56 347 3333"
+                    placeholder="+1 555 123 4567"
                     required
                     className="flex-1"
                   />
@@ -185,7 +158,7 @@ export function ContactForm({ contact }: ContactFormProps) {
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="name@sa.lulumea.com"
+                  placeholder="alex@yourcompany.com"
                   required
                 />
               </div>
@@ -198,7 +171,7 @@ export function ContactForm({ contact }: ContactFormProps) {
                   name="website"
                   value={formData.website}
                   onChange={handleChange}
-                  placeholder="luluhypermarket.com"
+                  placeholder={appConfig.defaultWebsite}
                 />
               </div>
 
@@ -233,9 +206,7 @@ export function ContactForm({ contact }: ContactFormProps) {
               <CardContent>
                 <CardPreview
                   nameEn={formData.nameEn}
-                  nameAr={formData.nameAr}
                   positionEn={formData.positionEn}
-                  positionAr={formData.positionAr}
                   location={formData.location}
                   phone={formData.phone}
                   email={formData.email}

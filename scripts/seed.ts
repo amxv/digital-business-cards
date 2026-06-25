@@ -26,7 +26,7 @@ async function seed() {
     // Insert admin user
     await db.insert(schema.users).values({
       id: adminId,
-      email: 'admin@luluhypermarket.com',
+      email: 'admin@example.com',
       name: 'Admin',
       role: 'admin',
       emailVerified: true,
@@ -42,23 +42,21 @@ async function seed() {
     });
 
     console.log('Created admin user:');
-    console.log('  Email: admin@luluhypermarket.com');
+    console.log('  Email: admin@example.com');
     console.log('  Password: admin123');
 
     // Create sample contact
     await db.insert(schema.contacts).values({
-      slug: 'bipin-raj',
-      nameEn: 'Bipin Raj',
-      nameAr: 'بيبين راج',
-      positionEn: 'Regional Director',
-      positionAr: 'المدير العام',
-      location: 'Lulu Group Regional Office, Riyadh, Kingdom of Saudi Arabia',
-      phone: '+966 56 347 3333',
-      email: 'Bipin@sa.lulumea.com',
-      website: 'luluhypermarket.com',
+      slug: 'alex-morgan',
+      nameEn: 'Alex Morgan',
+      positionEn: 'Sales Director',
+      location: 'Downtown Office, Dubai, UAE',
+      phone: '+971 50 123 4567',
+      email: 'alex@yourcompany.com',
+      website: 'yourcompany.com',
     });
 
-    console.log('Created sample contact: Bipin Raj');
+    console.log('Created sample contact: Alex Morgan');
   } catch (error) {
     console.error('Error seeding:', error);
     throw error;

@@ -1,133 +1,86 @@
-# Lulu Business Cards
+# Digital Business Cards
 
-A web application for creating and managing digital NFC business cards for Lulu Hypermarket employees. Admins can create contact profiles that generate QR codes and public contact pages. When employees scan the QR code or tap the NFC link, they are directed to a contact page where they can view details and download a vCard.
+A general-purpose web app for creating and managing digital business cards. Admins can create contact profiles, generate branded QR codes, and share public contact pages that let recipients save a vCard to their phone.
 
 ## Features
 
-- **Admin Dashboard**: Manage all business card contacts
-- **Contact Management**: Create, edit, and delete contact profiles with English and Arabic support
-- **QR Code Generation**: Branded QR codes with Lulu logo for each contact
-- **Public Contact Pages**: Mobile-friendly pages at `/c/[slug]` for each contact
-- **vCard Download**: One-click contact saving to phone
-- **Authentication**: Secure admin access with Better Auth
+- Admin dashboard for managing contacts
+- Contact profiles with name, title, location, phone, email, and website
+- Branded QR codes with a configurable center logo
+- Mobile-friendly public contact pages at `/c/[slug]`
+- One-click vCard download
+- Better Auth-based admin authentication
+
+## Branding
+
+Branding is centralized in [lib/app-config.ts](/Users/ashray/code/amxv/lulu-business-cards/lib/app-config.ts). You can customize the app name, organization name, description, default website, and logo through `NEXT_PUBLIC_*` environment variables.
+
+By default, the app uses [public/brand-logo.svg](/Users/ashray/code/amxv/lulu-business-cards/public/brand-logo.svg). To swap branding:
+
+1. Replace the logo asset in `public/`, or point `NEXT_PUBLIC_LOGO_PATH` at another public asset.
+2. Set the branding variables in your environment.
+3. Redeploy or restart the app.
 
 ## Tech Stack
 
-- **Framework**: Next.js 16.1.2 (App Router)
-- **Language**: TypeScript
-- **Database**: PostgreSQL (Neon Serverless)
-- **ORM**: Drizzle ORM
-- **Authentication**: Better Auth
-- **Styling**: Tailwind CSS v4
-- **UI Components**: Radix UI + shadcn/ui
-- **QR Code**: qrcode library
+- Next.js 16 App Router
+- TypeScript
+- PostgreSQL on Neon
+- Drizzle ORM
+- Better Auth
+- Tailwind CSS v4
+- shadcn/ui + Radix UI
+- `qrcode` for QR generation
 
 ## Getting Started
 
-### Prerequisites
-
-- Node.js 18+ or Bun
-- PostgreSQL database (Neon recommended)
-
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd lulu-business-cards
-   ```
-
-2. Install dependencies:
+1. Install dependencies:
    ```bash
    bun install
    ```
 
-3. Set up environment variables:
-   ```bash
-   cp .env.example .env.local
-   ```
+2. Configure environment variables:
+   - `DATABASE_URL`
+   - `BETTER_AUTH_SECRET`
+   - `BETTER_AUTH_URL`
+   - `NEXT_PUBLIC_BETTER_AUTH_URL`
+   - Optional branding vars:
+     - `NEXT_PUBLIC_APP_NAME`
+     - `NEXT_PUBLIC_ORGANIZATION_NAME`
+     - `NEXT_PUBLIC_APP_DESCRIPTION`
+     - `NEXT_PUBLIC_DEFAULT_WEBSITE`
+     - `NEXT_PUBLIC_LOGO_PATH`
+     - `NEXT_PUBLIC_LOGO_ALT`
+     - `NEXT_PUBLIC_LOGO_WIDTH`
+     - `NEXT_PUBLIC_LOGO_HEIGHT`
 
-4. Push the database schema:
+3. Push the database schema:
    ```bash
    bunx drizzle-kit push
    ```
 
-5. Seed the database (creates admin user and sample contact):
+4. Seed the database:
    ```bash
    bun run scripts/seed.ts
    ```
 
-6. Start the development server:
+5. Start development:
    ```bash
    bun dev
    ```
 
-7. Open [http://localhost:3000](http://localhost:3000)
+## Data Model
 
-## Project Structure
+The contact model includes:
 
-```
-├── app/
-│   ├── (auth)/sign-in/      # Sign-in page
-│   ├── admin/               # Admin dashboard
-│   │   ├── contacts/new/    # Create contact
-│   │   └── contacts/[id]/   # Edit & QR code pages
-│   ├── api/                 # API routes
-│   │   ├── auth/            # Better Auth endpoints
-│   │   ├── contacts/        # Contact CRUD
-│   │   └── vcard/           # vCard generation
-│   └── c/[slug]/            # Public contact page
-├── components/              # React components
-├── db/                      # Database schema
-├── lib/                     # Utilities & auth config
-└── public/                  # Static assets
-```
-
-## Routes
-
-| Route | Description |
-|-------|-------------|
-| `/` | Redirects to admin dashboard |
-| `/sign-in` | Admin sign-in page |
-| `/admin` | Admin dashboard - list all contacts |
-| `/admin/contacts/new` | Create new contact |
-| `/admin/contacts/[id]/edit` | Edit existing contact |
-| `/admin/contacts/[id]/qr` | View/download QR code |
-| `/c/[slug]` | Public contact page (QR/NFC destination) |
-| `/api/vcard/[slug]` | Download vCard file |
-
-## Database Schema
-
-### Contacts Table
-- `id` - Auto-incrementing primary key
-- `slug` - URL-friendly unique identifier
-- `nameEn` / `nameAr` - Name in English/Arabic
-- `positionEn` / `positionAr` - Position in English/Arabic
-- `location` - Office location
-- `phone` - Phone number
-- `email` - Email address
-- `website` - Website (default: luluhypermarket.com)
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/contacts` | List all contacts |
-| POST | `/api/contacts` | Create contact |
-| GET | `/api/contacts/[id]` | Get contact by ID |
-| PUT | `/api/contacts/[id]` | Update contact |
-| DELETE | `/api/contacts/[id]` | Delete contact |
-| GET | `/api/vcard/[slug]` | Download vCard |
+- `nameEn`
+- `positionEn`
+- `location`
+- `phone`
+- `email`
+- `website`
+- `slug`
 
 ## Deployment
 
-The application is designed to be deployed on Vercel. Set the following environment variables in your production environment:
-
-- `DATABASE_URL` - PostgreSQL connection string
-- `BETTER_AUTH_SECRET` - Secret key (min 32 characters)
-- `BETTER_AUTH_URL` - Production URL
-- `NEXT_PUBLIC_BETTER_AUTH_URL` - Production URL (for client)
-
-## License
-
-Private - Lulu Group International
+The app is ready to deploy on Vercel or any Next.js-compatible platform. Make sure your production environment includes the database, auth, and any branding variables you want to override.
